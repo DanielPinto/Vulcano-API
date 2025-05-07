@@ -1,0 +1,6 @@
+@Vulcano.WebApi_HostAddress = http://localhost:5008
+
+GET {{Vulcano.WebApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
