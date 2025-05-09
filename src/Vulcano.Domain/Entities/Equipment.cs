@@ -4,14 +4,29 @@ using Vulcano.Domain.ValueObjects;
 
 namespace Vulcano.Domain.Entities;
 
-public class Equipment(Guid Id, string name, string serialNumber, string type, DateTimeOffset purchaseDate) : BaseEntity(Id)
+public class Equipment : BaseEntity
 {
-    public string Name { get; private set; } = name;
-    public SerialNumber SerialNumber { get; private set; } = new SerialNumber(serialNumber);
-    public string Type { get; private set; } = type;
-    public DateTimeOffset PurchaseDate { get; private set; } = purchaseDate;
+    // ⚠️ EF Core requer este construtor sem parâmetros
+    private Equipment() : base(Guid.Empty) { }
 
-    public void Update(string name, string type, DateTime purchaseDate)
+    public Equipment(Guid id, string name, string serialNumber, string type, DateTimeOffset purchaseDate)
+        : base(id)
+    {
+        if (string.IsNullOrWhiteSpace(name))
+            throw new InvalidEquipmentException();
+
+        Name = name;
+        SerialNumber = new SerialNumber(serialNumber);
+        Type = type;
+        PurchaseDate = purchaseDate;
+    }
+
+    public string Name { get; private set; } = null!;
+    public SerialNumber SerialNumber { get; private set; } = null!;
+    public string Type { get; private set; } = null!;
+    public DateTimeOffset PurchaseDate { get; private set; }
+
+    public void Update(string name, string type, DateTimeOffset purchaseDate)
     {
         if (string.IsNullOrWhiteSpace(name))
             throw new InvalidEquipmentException();
@@ -20,5 +35,4 @@ public class Equipment(Guid Id, string name, string serialNumber, string type, D
         Type = type;
         PurchaseDate = purchaseDate;
     }
-
 }

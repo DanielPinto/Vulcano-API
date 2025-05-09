@@ -1,15 +1,10 @@
+using Vulcano.Application.Extensions;
 using Vulcano.Application.Response;
 using Vulcano.Application.UseCases.EquipmentUseCase;
-using Vulcano.Application.Validators.EquipamentValidators;
 using Vulcano.Domain.Interfaces;
+using Vulcano.Infrastructure.Extensions;
 using Vulcano.Infrastructure.Persistence;
 using Vulcano.WebApi.Filters;
-using Vulcano.Application.Extensions;
-using FluentValidation;
-using System.Diagnostics;
-using FluentValidation.AspNetCore;
-using Vulcano.Application.DTOs; // <- seu namespace da extensão AddValidators
-
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,22 +13,20 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddAppDbContext(builder.Configuration);
+
+
 // Add services
 builder.Services.AddSingleton<IEquipmentRepository, InMemoryEquipmentRepository >();
 builder.Services.AddScoped<IApiResponseFormatter,ApiResponseFormatter>();
+builder.Services.AddScoped<IEquipmentRepository, EquipmentRepository>();
 builder.Services.AddScoped<EquipmentHandler>();
 builder.Services.AddScoped<ValidateModelAttribute>();
 
 builder.Services
     .AddControllers();
 
-
-
 builder.Services.AddValidators();
-
-
-
-
 
 var app = builder.Build();
 
@@ -47,6 +40,5 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
-//app.UseMiddleware<ExceptionMiddleware>();
 
 await app.RunAsync();

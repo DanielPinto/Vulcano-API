@@ -1,8 +1,6 @@
 using FluentValidation;
-using FluentValidation.AspNetCore;
 using Microsoft.Extensions.DependencyInjection;
 using Vulcano.Application.DTOs;
-using Vulcano.Application.Validators.EquipamentValidators;
 
 namespace Vulcano.Application.Extensions
 {
